@@ -1,7 +1,3 @@
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
 import pytest
 from dash import html, dcc
 
@@ -35,11 +31,8 @@ def find_component_by_id(tree, id_value):
 
 def find_component_by_type(tree, comp_type):
     # match based on class or by tag name fallback
-    try:
-        if tree.__class__ is comp_type:
-            return tree
-    except Exception:
-        pass
+    if hasattr(tree, '__class__') and tree.__class__ is comp_type:
+        return tree
 
     # check children as above
     props = getattr(tree, 'props', None)
@@ -85,6 +78,4 @@ def test_region_picker_present(app):
     layout = app.layout
     picker = find_component_by_id(layout, 'region-picker')
     assert picker is not None
-    # import here to avoid top-level import issues in some envs
-    from dash import dcc as _dcc
-    assert isinstance(picker, _dcc.RadioItems)
+    assert isinstance(picker, dcc.RadioItems)
