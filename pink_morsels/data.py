@@ -10,6 +10,7 @@ def load_data(path: Path | str = DATA_PATH):
     Keep the raw rows so callers can filter by region before aggregating.
     """
     df = pd.read_csv(path)
+    df.columns = df.columns.str.capitalize()
     df['Date'] = pd.to_datetime(df['Date'])
     return df
 
